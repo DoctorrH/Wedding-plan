@@ -84,10 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }) : 'Chưa đặt ngày'}
                   {weddingDetails.venue && ` • ${weddingDetails.venue}`}
                 </p>
-                <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider bg-[#EBE3DC] text-[#1A1816] px-2 py-0.5 border border-[#C4B2A3]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                  Firebase Firestore
-                </span>
+
               </div>
             </div>
           </div>
@@ -139,14 +136,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            <button
-              onClick={onOpenAiAssistant}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2D2926] text-[#FCFAF7] text-xs uppercase tracking-wider font-semibold rounded-none hover:bg-[#423D38] transition-colors"
-              id="btn-open-ai-assistant"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#D4C3B5]" />
-              <span>Trợ Lý AI</span>
-            </button>
+
 
             {/* Excel Export & Reset actions */}
             <div className="hidden md:flex items-center gap-1 border border-[#D4C3B5] bg-white p-1">

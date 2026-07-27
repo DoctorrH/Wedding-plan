@@ -121,17 +121,7 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2 self-start md:self-auto">
-            {onExportExcel && (
-              <button
-                onClick={onExportExcel}
-                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-emerald-900"
-                id="btn-export-guest-excel"
-                title="Xuất danh sách khách mời ra file Excel"
-              >
-                <FileSpreadsheet className="w-4 h-4" />
-                <span>Xuất Excel</span>
-              </button>
-            )}
+
 
             <button
               onClick={onOpenAddGuest}

@@ -145,17 +145,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
               </button>
             </div>
 
-            {onExportExcel && (
-              <button
-                onClick={onExportExcel}
-                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-emerald-900"
-                id="btn-export-task-excel"
-                title="Xuất danh sách công việc & ngân sách ra file Excel"
-              >
-                <FileSpreadsheet className="w-4 h-4" />
-                <span>Xuất Excel</span>
-              </button>
-            )}
+
 
             {onOpenAddCategory && (
               <button

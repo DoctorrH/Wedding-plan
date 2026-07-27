@@ -77,9 +77,21 @@ export const AuthScreen: React.FC = () => {
       await signInWithPopup(auth, googleProvider);
     } catch (err: any) {
       console.error('Google Sign in error:', err);
-      if (err.code !== 'auth/popup-closed-by-user') {
-        setError('Không thể đăng nhập bằng Google. Vui lòng thử lại.');
+      if (err.code === 'auth/popup-closed-by-user') {
+        return;
       }
+      let errMsg = 'Không thể đăng nhập bằng Google. Vui lòng thử lại.';
+      if (err.code === 'auth/unauthorized-domain') {
+        const currentDomain = window.location.hostname;
+        errMsg = `Tên miền hiện tại (${currentDomain}) chưa được ủy quyền trong Firebase Console (Authentication -> Settings -> Authorized domains). Bạn vui lòng dùng Đăng nhập Email/Mật khẩu hoặc Tài khoản Khách bên dưới.`;
+      } else if (err.code === 'auth/popup-blocked') {
+        errMsg = 'Trình duyệt đã chặn cửa sổ bật lên (popup). Vui lòng cho phép mở popup trên trình duyệt và thử lại.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        errMsg = 'Đăng nhập Google chưa được bật trong Firebase Console (Authentication -> Sign-in method).';
+      } else if (err.message) {
+        errMsg = `Không thể đăng nhập bằng Google (${err.code || 'lỗi'}). Vui lòng dùng Email/Mật khẩu hoặc dùng thử tài khoản Khách.`;
+      }
+      setError(errMsg);
     } finally {
       setLoading(false);
     }
@@ -116,10 +128,6 @@ export const AuthScreen: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2 bg-[#F3EEEA] px-3 py-1 border border-[#DCD3CC] text-[11px] font-semibold text-[#1A1816]">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
-            <span>Bảo mật dữ liệu cá nhân</span>
-          </div>
         </div>
       </header>
 
@@ -129,11 +137,6 @@ export const AuthScreen: React.FC = () => {
           
           {/* Left Column: Branding & Value Props */}
           <div className="lg:col-span-7 space-y-6 md:pr-6">
-            <div className="inline-flex items-center gap-2 bg-[#F3EEEA] border border-[#C4B2A3] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#1A1816]">
-              <Sparkles className="w-3.5 h-3.5 text-[#C4B2A3]" />
-              <span>Không gian lưu trữ cá nhân hóa</span>
-            </div>
-
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif italic font-bold text-[#1A1816] leading-[1.15]">
               Quản Lý Kế Hoạch Cưới Hoàn Hảo Cho Ngày Trọng Đại Của Bạn
             </h1>

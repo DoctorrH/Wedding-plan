@@ -65,9 +65,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       onClose();
     } catch (err: any) {
       console.error('Google Sign in error:', err);
-      if (err.code !== 'auth/popup-closed-by-user') {
-        setError('Không thể đăng nhập bằng Google. Vui lòng thử lại.');
+      if (err.code === 'auth/popup-closed-by-user') {
+        return;
       }
+      let errMsg = 'Không thể đăng nhập bằng Google. Vui lòng thử lại.';
+      if (err.code === 'auth/unauthorized-domain') {
+        const currentDomain = window.location.hostname;
+        errMsg = `Tên miền hiện tại (${currentDomain}) chưa được thêm vào Authorized Domains trong Firebase Console. Hãy thử đăng nhập Email/Mật khẩu bên dưới.`;
+      } else if (err.code === 'auth/popup-blocked') {
+        errMsg = 'Trình duyệt đã chặn popup. Vui lòng cho phép bật popup và thử lại.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        errMsg = 'Đăng nhập Google chưa được kích hoạt trong Firebase Console.';
+      } else if (err.message) {
+        errMsg = `Đăng nhập Google thất bại (${err.code || 'lỗi'}). Hãy dùng Đăng nhập Email.`;
+      }
+      setError(errMsg);
     } finally {
       setLoading(false);
     }

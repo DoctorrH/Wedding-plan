@@ -73,18 +73,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     ...tasks.map(t => t.category),
   ]));
 
-  const categoryStats: Record<string, { estimated: number; actual: number; deposit: number; count: number }> = {};
+  const categoryStats: Record<string, { estimated: number; actual: number; deposit: number; count: number; totalCost: number }> = {};
   allCategoryKeys.forEach(k => {
-    categoryStats[k] = { estimated: 0, actual: 0, deposit: 0, count: 0 };
+    categoryStats[k] = { estimated: 0, actual: 0, deposit: 0, count: 0, totalCost: 0 };
   });
 
   tasks.forEach(t => {
     if (!categoryStats[t.category]) {
-      categoryStats[t.category] = { estimated: 0, actual: 0, deposit: 0, count: 0 };
+      categoryStats[t.category] = { estimated: 0, actual: 0, deposit: 0, count: 0, totalCost: 0 };
     }
+    const costToUse = t.actualCost > 0 ? t.actualCost : (t.estimatedCost || 0);
     categoryStats[t.category].estimated += t.estimatedCost || 0;
     categoryStats[t.category].actual += t.actualCost || 0;
     categoryStats[t.category].deposit += t.depositPaid || 0;
+    categoryStats[t.category].totalCost += costToUse;
     categoryStats[t.category].count += 1;
   });
 
@@ -270,7 +272,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {allCategoryKeys.map(catKey => {
               const catLabel = categoryNames?.[catKey] || CATEGORY_LABELS[catKey]?.label || catKey;
               const stat = categoryStats[catKey];
-              const cost = stat.actual > 0 ? stat.actual : stat.estimated;
+              const cost = stat.totalCost;
               const percent = totalEstimated > 0 ? Math.round((cost / totalEstimated) * 100) : 0;
 
               if (cost === 0 && stat.count === 0) return null;

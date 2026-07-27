@@ -51,7 +51,12 @@ export {
 export type { User };
 
 export async function signOutUser() {
-  await firebaseSignOut(auth);
+  localStorage.removeItem('wedding_local_guest');
+  try {
+    await firebaseSignOut(auth);
+  } catch (err) {
+    // Ignore if not signed in via firebase
+  }
 }
 
 export async function ensureAuth() {

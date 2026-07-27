@@ -247,6 +247,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
             // Category Totals
             const catEstimated = categoryTasks.reduce((sum, t) => sum + (t.estimatedCost || 0), 0);
             const catActual = categoryTasks.reduce((sum, t) => sum + (t.actualCost || 0), 0);
+            const catTotalCost = categoryTasks.reduce((sum, t) => sum + (t.actualCost > 0 ? t.actualCost : (t.estimatedCost || 0)), 0);
             const catCompletedCount = categoryTasks.filter(t => t.status === 'COMPLETED').length;
 
             return (
@@ -299,7 +300,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                     <div className="text-right text-xs font-mono">
                       <span className="text-[#2D2926]/60 uppercase text-[9px] tracking-wider block">Tổng chi phí:</span>
                       <span className="font-bold text-[#2D2926]">
-                        {formatVND(catActual > 0 ? catActual : catEstimated)}
+                        {formatVND(catTotalCost)}
                       </span>
                     </div>
 

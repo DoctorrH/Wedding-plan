@@ -103,8 +103,9 @@ export const AuthScreen: React.FC = () => {
     try {
       await signInAnonymously(auth);
     } catch (err: any) {
-      console.error('Guest Sign in error:', err);
-      setError('Không thể đăng nhập với tư cách Khách. Vui lòng thử lại.');
+      console.warn('Firebase anonymous sign in failed, using local guest mode:', err);
+      localStorage.setItem('wedding_local_guest', 'true');
+      window.location.reload();
     } finally {
       setLoading(false);
     }

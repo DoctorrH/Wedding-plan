@@ -56,7 +56,16 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+      if (!user && localStorage.getItem('wedding_local_guest') === 'true') {
+        setCurrentUser({
+          uid: 'local-guest-user',
+          isAnonymous: true,
+          displayName: 'Khách (Demo)',
+          email: null,
+        } as unknown as User);
+      } else {
+        setCurrentUser(user);
+      }
       setAuthLoading(false);
     });
     return () => unsubscribeAuth();

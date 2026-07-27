@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "weddingDetails": {
+      "title": "Wedding Details",
+      "description": "General information about the wedding couple, date, venue, and budget",
+      "type": "object",
+      "properties": {
+        "groomName": { "type": "string" },
+        "brideName": { "type": "string" },
+        "weddingDate": { "type": "string" },
+        "venue": { "type": "string" },
+        "totalBudgetLimit": { "type": "number" },
+        "notes": { "type": "string" }
+      }
+    },
+    "categoryNames": {
+      "title": "Category Names",
+      "description": "Custom category display labels",
+      "type": "object",
+      "properties": {
+        "LE_GIA_TIEN": { "type": "string" },
+        "TRANG_PHUC": { "type": "string" },
+        "TIEC_CUOI": { "type": "string" },
+        "CHUP_ANH": { "type": "string" },
+        "THIEP_MOI": { "type": "string" },
+        "NHAN_CUOI": { "type": "string" },
+        "XE_HOA_DECOR": { "type": "string" },
+        "KHAC": { "type": "string" }
+      }
+    },
+    "tasks": {
+      "title": "Task Item",
+      "description": "Wedding tasks and budget items",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "targetMonth": { "type": "string" },
+        "status": { "type": "string" },
+        "estimatedCost": { "type": "number" },
+        "actualCost": { "type": "number" },
+        "depositPaid": { "type": "number" },
+        "vendorName": { "type": "string" },
+        "vendorContact": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "guests": {
+      "title": "Guest Item",
+      "description": "Wedding guest list and RSVP status",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "group": { "type": "string" },
+        "phone": { "type": "string" },
+        "tableNo": { "type": "string" },
+        "rsvpStatus": { "type": "string" },
+        "pax": { "type": "number" },
+        "giftReceived": { "type": "boolean" },
+        "giftAmount": { "type": "number" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

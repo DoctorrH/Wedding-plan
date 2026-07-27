@@ -1,0 +1,6 @@
+{
+  "name": "Sổ Tay Kế Hoạch Cưới - Wedding Planner",
+  "description": "Ứng dụng lập kế hoạch đám cưới toàn diện với lịch theo dõi hàng tháng, danh sách công việc, dự toán chi phí và quản lý khách mời RSVP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

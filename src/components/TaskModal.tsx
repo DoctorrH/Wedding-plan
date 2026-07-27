@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, DollarSign, Calendar as CalendarIcon, Building, FileText } from 'lucide-react';
+import { X, Check, DollarSign, Calendar as CalendarIcon, Building, FileText, Plus } from 'lucide-react';
 import { TaskItem, TaskCategory, TaskStatus, CATEGORY_LABELS } from '../types';
 
 interface TaskModalProps {
@@ -10,6 +10,7 @@ interface TaskModalProps {
   initialDate?: string | null;
   initialCategory?: TaskCategory | null;
   categoryNames?: Record<TaskCategory, string>;
+  onAddCategory?: (categoryName: string) => string;
 }
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -20,6 +21,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   initialDate,
   initialCategory,
   categoryNames,
+  onAddCategory,
 }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<TaskCategory>('TIEC_CUOI');
@@ -32,6 +34,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const [vendorName, setVendorName] = useState('');
   const [vendorContact, setVendorContact] = useState('');
   const [notes, setNotes] = useState('');
+
+  const [isAddingNewCat, setIsAddingNewCat] = useState(false);
+  const [newCatNameInput, setNewCatNameInput] = useState('');
+
+  const allCatKeys = Array.from(new Set([
+    ...Object.keys(CATEGORY_LABELS),
+    ...Object.keys(categoryNames || {})
+  ]));
 
   useEffect(() => {
     if (taskToEdit) {
@@ -129,20 +139,81 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* Category & Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-semibold text-[#2D2926] mb-1">
-                Danh mục công việc
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value as TaskCategory)}
-                className="w-full px-3.5 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
-              >
-                {(Object.keys(CATEGORY_LABELS) as TaskCategory[]).map((catKey) => (
-                  <option key={catKey} value={catKey}>
-                    {categoryNames?.[catKey] || CATEGORY_LABELS[catKey].label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-[10px] uppercase tracking-widest font-semibold text-[#2D2926]">
+                  Danh mục công việc
+                </label>
+                {onAddCategory && !isAddingNewCat && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingNewCat(true)}
+                    className="text-[10px] uppercase font-bold text-emerald-800 hover:underline flex items-center gap-0.5"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Thêm danh mục</span>
+                  </button>
+                )}
+              </div>
+
+              {isAddingNewCat ? (
+                <div className="flex items-center gap-1.5 bg-emerald-50/80 p-1.5 border border-emerald-300">
+                  <input
+                    type="text"
+                    autoFocus
+                    placeholder="Tên danh mục mới..."
+                    value={newCatNameInput}
+                    onChange={(e) => setNewCatNameInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newCatNameInput.trim() && onAddCategory) {
+                          const created = onAddCategory(newCatNameInput.trim());
+                          if (created) setCategory(created);
+                          setNewCatNameInput('');
+                          setIsAddingNewCat(false);
+                        }
+                      }
+                    }}
+                    className="flex-1 px-2 py-1 text-xs bg-white border border-emerald-300 focus:outline-none text-[#2D2926]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (newCatNameInput.trim() && onAddCategory) {
+                        const created = onAddCategory(newCatNameInput.trim());
+                        if (created) setCategory(created);
+                        setNewCatNameInput('');
+                        setIsAddingNewCat(false);
+                      }
+                    }}
+                    className="px-2.5 py-1 bg-emerald-800 text-white text-xs font-semibold uppercase hover:bg-emerald-900"
+                  >
+                    Tạo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingNewCat(false);
+                      setNewCatNameInput('');
+                    }}
+                    className="px-2 py-1 bg-slate-200 text-slate-700 text-xs hover:bg-slate-300"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              ) : (
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as TaskCategory)}
+                  className="w-full px-3.5 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
+                >
+                  {allCatKeys.map((catKey) => (
+                    <option key={catKey} value={catKey}>
+                      {categoryNames?.[catKey] || CATEGORY_LABELS[catKey]?.label || catKey}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>

@@ -16,6 +16,7 @@ import {
   FileText,
   FileSpreadsheet,
   FolderEdit,
+  FolderPlus,
   Layers,
   List
 } from 'lucide-react';
@@ -32,10 +33,12 @@ interface TaskListViewProps {
   tasks: TaskItem[];
   categoryNames?: Record<TaskCategory, string>;
   onOpenAddTask: (defaultCategory?: TaskCategory) => void;
+  onOpenAddCategory?: () => void;
   onEditTask: (task: TaskItem) => void;
   onDeleteTask: (taskId: string) => void;
   onToggleTaskStatus: (taskId: string) => void;
   onEditCategoryName?: (categoryKey: TaskCategory, currentName: string) => void;
+  onDeleteCategory?: (categoryKey: TaskCategory) => void;
   onExportExcel?: () => void;
 }
 
@@ -43,10 +46,12 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
   tasks,
   categoryNames,
   onOpenAddTask,
+  onOpenAddCategory,
   onEditTask,
   onDeleteTask,
   onToggleTaskStatus,
   onEditCategoryName,
+  onDeleteCategory,
   onExportExcel,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,7 +90,13 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
     return sum + Math.max(0, costToUse - (t.depositPaid || 0));
   }, 0);
 
-  const allCategoryKeys = Object.keys(CATEGORY_LABELS) as TaskCategory[];
+  const allCategoryKeys = Array.from(
+    new Set([
+      ...Object.keys(CATEGORY_LABELS),
+      ...Object.keys(categoryNames || {}),
+      ...tasks.map(t => t.category),
+    ])
+  );
 
   const getCategoryLabel = (catKey: TaskCategory) => {
     return categoryNames?.[catKey] || CATEGORY_LABELS[catKey]?.label || catKey;
@@ -143,6 +154,18 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
               >
                 <FileSpreadsheet className="w-4 h-4" />
                 <span>Xuất Excel</span>
+              </button>
+            )}
+
+            {onOpenAddCategory && (
+              <button
+                onClick={onOpenAddCategory}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#2D2926] text-[#2D2926] font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-[#F5F1EE]"
+                id="btn-add-category"
+                title="Thêm danh mục công việc mới"
+              >
+                <FolderPlus className="w-4 h-4 text-[#2D2926]" />
+                <span>Thêm Danh Mục</span>
               </button>
             )}
 
@@ -247,6 +270,26 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                         title="Đổi tên danh mục này"
                       >
                         <FolderEdit className="w-4 h-4" />
+                      </button>
+                    )}
+
+                    {/* Delete Category Button */}
+                    {onDeleteCategory && (
+                      <button
+                        onClick={() => {
+                          if (categoryTasks.length > 0) {
+                            if (!confirm(`Danh mục "${label}" đang có ${categoryTasks.length} công việc. Bạn có chắc chắn muốn xóa danh mục này khỏi danh sách tùy chỉnh?`)) {
+                              return;
+                            }
+                          } else {
+                            if (!confirm(`Xóa danh mục "${label}"?`)) return;
+                          }
+                          onDeleteCategory(catKey);
+                        }}
+                        className="p-1 hover:bg-rose-100 text-rose-700/60 hover:text-rose-800 transition-colors"
+                        title="Xóa danh mục này"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     )}
                   </div>

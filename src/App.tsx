@@ -43,6 +43,7 @@ import { GuestModal } from './components/GuestModal';
 import { EditCoupleModal } from './components/EditCoupleModal';
 import { AiAssistantModal } from './components/AiAssistantModal';
 import { EditCategoryModal } from './components/EditCategoryModal';
+import { AddCategoryModal } from './components/AddCategoryModal';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 import { AuthModal } from './components/AuthModal';
 import { AuthScreen } from './components/AuthScreen';
@@ -122,6 +123,9 @@ export default function App() {
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
   const [editingCategoryKey, setEditingCategoryKey] = useState<TaskCategory | null>(null);
   const [editingCategoryCurrentName, setEditingCategoryCurrentName] = useState('');
+
+  // Add Category Modal State
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
 
   // Delete Confirmation Modal State
   const [confirmModalConfig, setConfirmModalConfig] = useState<{
@@ -243,6 +247,28 @@ export default function App() {
       await saveCategoryNamesToDb(updated, currentUser?.uid);
     } catch (err) {
       console.error('Lỗi khi lưu tên danh mục:', err);
+    }
+  };
+
+  const handleAddCategory = (categoryName: string): TaskCategory => {
+    const slug = 'CAT_' + Date.now();
+    const updated = {
+      ...categoryNames,
+      [slug]: categoryName,
+    };
+    saveCategoryNamesToDb(updated, currentUser?.uid).catch(err => {
+      console.error('Lỗi khi thêm danh mục:', err);
+    });
+    return slug;
+  };
+
+  const handleDeleteCategory = async (catKey: TaskCategory) => {
+    const updated = { ...categoryNames };
+    delete updated[catKey];
+    try {
+      await saveCategoryNamesToDb(updated, currentUser?.uid);
+    } catch (err) {
+      console.error('Lỗi khi xóa danh mục:', err);
     }
   };
 
@@ -368,6 +394,7 @@ export default function App() {
               setTaskInitialCategory(defaultCategory || null);
               setIsTaskModalOpen(true);
             }}
+            onOpenAddCategory={() => setIsAddCategoryModalOpen(true)}
             onEditTask={(task) => {
               setTaskToEdit(task);
               setIsTaskModalOpen(true);
@@ -379,6 +406,7 @@ export default function App() {
               setEditingCategoryCurrentName(currentName);
               setIsEditCategoryModalOpen(true);
             }}
+            onDeleteCategory={handleDeleteCategory}
             onExportExcel={handleExportTasksExcel}
           />
         )}
@@ -422,6 +450,7 @@ export default function App() {
         initialDate={taskInitialDate}
         initialCategory={taskInitialCategory}
         categoryNames={categoryNames}
+        onAddCategory={handleAddCategory}
       />
 
       <EditCategoryModal
@@ -433,6 +462,12 @@ export default function App() {
         categoryKey={editingCategoryKey}
         currentName={editingCategoryCurrentName}
         onSave={(catKey, newName) => handleSaveCategoryName(catKey, newName)}
+      />
+
+      <AddCategoryModal
+        isOpen={isAddCategoryModalOpen}
+        onClose={() => setIsAddCategoryModalOpen(false)}
+        onAddCategory={handleAddCategory}
       />
 
       <GuestModal

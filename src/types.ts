@@ -1,12 +1,4 @@
-export type TaskCategory =
-  | 'LE_GIA_TIEN'
-  | 'TRANG_PHUC'
-  | 'TIEC_CUOI'
-  | 'CHUP_ANH'
-  | 'THIEP_MOI'
-  | 'NHAN_CUOI'
-  | 'XE_HOA_DECOR'
-  | 'KHAC';
+export type TaskCategory = string;
 
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
 

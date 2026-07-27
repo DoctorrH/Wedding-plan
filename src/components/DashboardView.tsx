@@ -67,24 +67,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const estimatedTables = Math.ceil(totalAttendingHeadcount / tableCapacity);
 
   // Group costs by Category
-  const categoryStats: Record<TaskCategory, { estimated: number; actual: number; deposit: number; count: number }> = {
-    LE_GIA_TIEN: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    TRANG_PHUC: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    TIEC_CUOI: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    CHUP_ANH: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    THIEP_MOI: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    NHAN_CUOI: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    XE_HOA_DECOR: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-    KHAC: { estimated: 0, actual: 0, deposit: 0, count: 0 },
-  };
+  const allCategoryKeys = Array.from(new Set([
+    ...Object.keys(CATEGORY_LABELS),
+    ...Object.keys(categoryNames || {}),
+    ...tasks.map(t => t.category),
+  ]));
+
+  const categoryStats: Record<string, { estimated: number; actual: number; deposit: number; count: number }> = {};
+  allCategoryKeys.forEach(k => {
+    categoryStats[k] = { estimated: 0, actual: 0, deposit: 0, count: 0 };
+  });
 
   tasks.forEach(t => {
-    if (categoryStats[t.category]) {
-      categoryStats[t.category].estimated += t.estimatedCost || 0;
-      categoryStats[t.category].actual += t.actualCost || 0;
-      categoryStats[t.category].deposit += t.depositPaid || 0;
-      categoryStats[t.category].count += 1;
+    if (!categoryStats[t.category]) {
+      categoryStats[t.category] = { estimated: 0, actual: 0, deposit: 0, count: 0 };
     }
+    categoryStats[t.category].estimated += t.estimatedCost || 0;
+    categoryStats[t.category].actual += t.actualCost || 0;
+    categoryStats[t.category].deposit += t.depositPaid || 0;
+    categoryStats[t.category].count += 1;
   });
 
   return (
@@ -266,8 +267,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
-            {(Object.keys(CATEGORY_LABELS) as TaskCategory[]).map(catKey => {
-              const catLabel = categoryNames?.[catKey] || CATEGORY_LABELS[catKey].label;
+            {allCategoryKeys.map(catKey => {
+              const catLabel = categoryNames?.[catKey] || CATEGORY_LABELS[catKey]?.label || catKey;
               const stat = categoryStats[catKey];
               const cost = stat.actual > 0 ? stat.actual : stat.estimated;
               const percent = totalEstimated > 0 ? Math.round((cost / totalEstimated) * 100) : 0;

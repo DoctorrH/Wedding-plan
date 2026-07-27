@@ -83,7 +83,7 @@ export const AuthScreen: React.FC = () => {
       let errMsg = 'Không thể đăng nhập bằng Google. Vui lòng thử lại.';
       if (err.code === 'auth/unauthorized-domain') {
         const currentDomain = window.location.hostname;
-        errMsg = `Google Sign-In bị giới hạn tên miền trên Netlify (${currentDomain}). Vui lòng dùng Đăng nhập bằng Email/Mật khẩu hoặc Dùng thử không cần đăng nhập bên dưới — hoạt động 100% đầy đủ tính năng!`;
+        errMsg = `Tên miền (${currentDomain}) chưa có trong Authorized Domains của Firebase project "weddingplan-57537". Hãy vào Firebase Console của bạn > Authentication > Settings > Authorized domains > bấm "Add domain" và nhập: ${currentDomain}`;
       } else if (err.code === 'auth/popup-blocked') {
         errMsg = 'Trình duyệt đã chặn cửa sổ bật lên (popup). Vui lòng cho phép mở popup trên trình duyệt và thử lại.';
       } else if (err.code === 'auth/operation-not-allowed') {

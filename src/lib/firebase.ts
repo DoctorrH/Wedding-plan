@@ -29,8 +29,9 @@ import { initialWeddingDetails, initialTasks, initialGuests } from '../data/init
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize Firestore with specific database ID if provided
-const db = firebaseConfig.firestoreDatabaseId 
-  ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+const config = firebaseConfig as Record<string, any>;
+const db = config.firestoreDatabaseId 
+  ? getFirestore(app, config.firestoreDatabaseId)
   : getFirestore(app);
 
 const auth = getAuth(app);

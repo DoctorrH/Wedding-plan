@@ -13,7 +13,7 @@ import {
   initialTasks, 
   initialGuests 
 } from './data/initialData';
-import { exportToJsonFile } from './lib/utils';
+import { exportTasksToExcel, exportGuestsToExcel } from './lib/excelExport';
 import {
   subscribeWeddingDetails,
   saveWeddingDetailsToDb,
@@ -272,44 +272,12 @@ export default function App() {
     });
   };
 
-  const handleExportData = () => {
-    const exportPayload = {
-      version: '1.0',
-      exportedAt: new Date().toISOString(),
-      weddingDetails,
-      tasks,
-      guests,
-    };
-    exportToJsonFile(exportPayload, `Ke-hoach-cuoi-${weddingDetails.groomName}-${weddingDetails.brideName}.json`);
+  const handleExportTasksExcel = () => {
+    exportTasksToExcel(tasks, weddingDetails, categoryNames);
   };
 
-  const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (evt) => {
-      try {
-        const json = JSON.parse(evt.target?.result as string);
-        if (json.weddingDetails) await saveWeddingDetailsToDb(json.weddingDetails);
-        if (json.tasks && Array.isArray(json.tasks)) {
-          for (const t of json.tasks) {
-            const { id, ...rest } = t;
-            await saveTaskToDb(rest, id);
-          }
-        }
-        if (json.guests && Array.isArray(json.guests)) {
-          for (const g of json.guests) {
-            const { id, ...rest } = g;
-            await saveGuestToDb(rest, id);
-          }
-        }
-        alert('Đã nhập thành công dữ liệu kế hoạch đám cưới vào Firebase Firestore!');
-      } catch (err) {
-        alert('File JSON không hợp lệ, vui lòng kiểm tra lại!');
-      }
-    };
-    reader.readAsText(file);
+  const handleExportGuestsExcel = () => {
+    exportGuestsToExcel(guests, weddingDetails);
   };
 
   // Pending tasks & attending guests counts
@@ -344,8 +312,8 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         currentUser={currentUser}
         onResetData={handleResetData}
-        onExportData={handleExportData}
-        onImportData={handleImportData}
+        onExportTasksExcel={handleExportTasksExcel}
+        onExportGuestsExcel={handleExportGuestsExcel}
         pendingTasksCount={pendingTasksCount}
         attendingGuestsCount={attendingGuestsCount}
       />
@@ -411,6 +379,7 @@ export default function App() {
               setEditingCategoryCurrentName(currentName);
               setIsEditCategoryModalOpen(true);
             }}
+            onExportExcel={handleExportTasksExcel}
           />
         )}
 
@@ -427,6 +396,7 @@ export default function App() {
             }}
             onDeleteGuest={handleDeleteGuest}
             onQuickUpdateRSVP={handleQuickUpdateRSVP}
+            onExportExcel={handleExportGuestsExcel}
           />
         )}
       </main>

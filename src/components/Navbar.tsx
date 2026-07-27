@@ -7,8 +7,7 @@ import {
   LayoutDashboard, 
   Sparkles, 
   RotateCcw, 
-  Download, 
-  Upload, 
+  FileSpreadsheet,
   Settings,
   Printer,
   User as UserIcon,
@@ -28,8 +27,8 @@ interface NavbarProps {
   onOpenAuth: () => void;
   currentUser: User | null;
   onResetData: () => void;
-  onExportData: () => void;
-  onImportData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onExportTasksExcel: () => void;
+  onExportGuestsExcel: () => void;
   pendingTasksCount: number;
   attendingGuestsCount: number;
 }
@@ -43,12 +42,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAuth,
   currentUser,
   onResetData,
-  onExportData,
-  onImportData,
+  onExportTasksExcel,
+  onExportGuestsExcel,
   pendingTasksCount,
   attendingGuestsCount,
 }) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const countdown = getDaysRemaining(weddingDetails.weddingDate);
 
   const isAnonymous = currentUser?.isAnonymous ?? true;
@@ -150,33 +148,26 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Trợ Lý AI</span>
             </button>
 
-            {/* Import / Export & Reset actions */}
+            {/* Excel Export & Reset actions */}
             <div className="hidden md:flex items-center gap-1 border border-[#D4C3B5] bg-white p-1">
               <button
-                onClick={onExportData}
-                className="p-1.5 hover:bg-[#F5F1EE] text-[#2D2926] transition-colors text-xs flex items-center gap-1 uppercase tracking-wider text-[10px]"
-                title="Tải xuống file lưu trữ JSON"
-                id="btn-export-data"
+                onClick={onExportTasksExcel}
+                className="p-1.5 hover:bg-[#F5F1EE] text-[#2D2926] transition-colors text-xs flex items-center gap-1 uppercase tracking-wider text-[10px] font-semibold"
+                title="Xuất file Excel công việc & ngân sách"
+                id="btn-export-tasks-excel"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Lưu</span>
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-800" />
+                <span>Excel Công Việc</span>
               </button>
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="p-1.5 hover:bg-[#F5F1EE] text-[#2D2926] transition-colors text-xs flex items-center gap-1 uppercase tracking-wider text-[10px]"
-                title="Nhập dữ liệu từ file JSON"
-                id="btn-import-data"
+                onClick={onExportGuestsExcel}
+                className="p-1.5 hover:bg-[#F5F1EE] text-[#2D2926] transition-colors text-xs flex items-center gap-1 uppercase tracking-wider text-[10px] font-semibold"
+                title="Xuất file Excel danh sách khách mời"
+                id="btn-export-guests-excel"
               >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Mở</span>
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-800" />
+                <span>Excel Khách Mời</span>
               </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={onImportData}
-                accept=".json"
-                className="hidden"
-              />
               <button
                 onClick={onResetData}
                 className="p-1.5 hover:bg-[#F5F1EE] text-[#2D2926] transition-colors text-xs flex items-center gap-1 uppercase tracking-wider text-[10px]"

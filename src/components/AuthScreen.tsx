@@ -392,9 +392,7 @@ export const AuthScreen: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#EBE3DC] bg-white py-4 text-center text-xs text-[#786F68] font-medium">
-        <p>Sổ Tay Kế Hoạch Cưới — Đồng bộ trực tuyến qua Firebase Auth & Firestore</p>
-      </footer>
+      <footer className="border-t border-[#EBE3DC] bg-white py-2" />
     </div>
   );
 };

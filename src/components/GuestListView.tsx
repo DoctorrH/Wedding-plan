@@ -10,6 +10,7 @@ import {
   Phone, 
   MapPin, 
   FileText, 
+  FileSpreadsheet,
   Edit3, 
   Trash2, 
   Filter,
@@ -31,6 +32,7 @@ interface GuestListViewProps {
   onEditGuest: (guest: GuestItem) => void;
   onDeleteGuest: (guestId: string) => void;
   onQuickUpdateRSVP: (guestId: string, rsvp: GuestRSVPStatus) => void;
+  onExportExcel?: () => void;
 }
 
 export const GuestListView: React.FC<GuestListViewProps> = ({
@@ -39,6 +41,7 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
   onEditGuest,
   onDeleteGuest,
   onQuickUpdateRSVP,
+  onExportExcel,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
@@ -102,14 +105,28 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={onOpenAddGuest}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#2D2926] text-[#FCFAF7] font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-black self-start md:self-auto"
-            id="btn-add-guest-top"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Thêm Khách Mời Mới</span>
-          </button>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            {onExportExcel && (
+              <button
+                onClick={onExportExcel}
+                className="flex items-center gap-2 px-4 py-2.5 bg-emerald-800 text-white font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-emerald-900"
+                id="btn-export-guest-excel"
+                title="Xuất danh sách khách mời ra file Excel"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>Xuất Excel</span>
+              </button>
+            )}
+
+            <button
+              onClick={onOpenAddGuest}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#2D2926] text-[#FCFAF7] font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-black"
+              id="btn-add-guest-top"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm Khách Mời Mới</span>
+            </button>
+          </div>
         </div>
 
         {/* Metric Cards Grid */}

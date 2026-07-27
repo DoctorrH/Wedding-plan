@@ -71,7 +71,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       let errMsg = 'Không thể đăng nhập bằng Google. Vui lòng thử lại.';
       if (err.code === 'auth/unauthorized-domain') {
         const currentDomain = window.location.hostname;
-        errMsg = `Tên miền hiện tại (${currentDomain}) chưa được thêm vào Authorized Domains trong Firebase Console. Hãy thử đăng nhập Email/Mật khẩu bên dưới.`;
+        errMsg = `Google Sign-In bị giới hạn tên miền trên Netlify (${currentDomain}). Vui lòng dùng Đăng nhập bằng Email/Mật khẩu bên dưới — hoạt động 100% đầy đủ tính năng!`;
       } else if (err.code === 'auth/popup-blocked') {
         errMsg = 'Trình duyệt đã chặn popup. Vui lòng cho phép bật popup và thử lại.';
       } else if (err.code === 'auth/operation-not-allowed') {

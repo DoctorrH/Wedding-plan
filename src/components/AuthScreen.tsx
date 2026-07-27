@@ -392,7 +392,9 @@ export const AuthScreen: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#EBE3DC] bg-white py-2" />
+      <footer className="border-t border-[#EBE3DC] bg-white py-4 text-center text-xs text-[#786F68] font-medium tracking-wider">
+        <p>by NTH</p>
+      </footer>
     </div>
   );
 };

@@ -52,6 +52,7 @@ export interface WeddingDetails {
   weddingDate: string; // YYYY-MM-DD
   venue: string;
   totalBudgetLimit: number; // Hạn mức ngân sách tổng
+  tableCapacity?: number; // Số người / bàn tiệc (Mặc định: 10)
   notes: string;
 }
 

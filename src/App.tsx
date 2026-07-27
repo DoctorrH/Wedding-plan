@@ -386,6 +386,8 @@ export default function App() {
         {activeTab === 'guests' && (
           <GuestListView
             guests={guests}
+            weddingDetails={weddingDetails}
+            onUpdateWeddingDetails={handleSaveWeddingDetails}
             onOpenAddGuest={() => {
               setGuestToEdit(null);
               setIsGuestModalOpen(true);
@@ -400,6 +402,11 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-[#EBE3DC] bg-white py-4 text-center text-xs text-[#786F68] font-medium tracking-wider">
+        <p>by NTH</p>
+      </footer>
 
       {/* MODALS */}
       <TaskModal

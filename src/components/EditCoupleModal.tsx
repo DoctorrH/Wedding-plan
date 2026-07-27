@@ -20,6 +20,7 @@ export const EditCoupleModal: React.FC<EditCoupleModalProps> = ({
   const [weddingDate, setWeddingDate] = useState('');
   const [venue, setVenue] = useState('');
   const [totalBudgetLimit, setTotalBudgetLimit] = useState<number | ''>(250000000);
+  const [tableCapacity, setTableCapacity] = useState<number>(10);
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export const EditCoupleModal: React.FC<EditCoupleModalProps> = ({
       setWeddingDate(weddingDetails.weddingDate || '');
       setVenue(weddingDetails.venue || '');
       setTotalBudgetLimit(weddingDetails.totalBudgetLimit || '');
+      setTableCapacity(weddingDetails.tableCapacity || 10);
       setNotes(weddingDetails.notes || '');
     }
   }, [weddingDetails, isOpen]);
@@ -43,6 +45,7 @@ export const EditCoupleModal: React.FC<EditCoupleModalProps> = ({
       weddingDate,
       venue: venue.trim(),
       totalBudgetLimit: Number(totalBudgetLimit) || 0,
+      tableCapacity: Number(tableCapacity) || 10,
       notes: notes.trim(),
     });
     onClose();
@@ -139,6 +142,41 @@ export const EditCoupleModal: React.FC<EditCoupleModalProps> = ({
               onChange={(e) => setTotalBudgetLimit(e.target.value === '' ? '' : Number(e.target.value))}
               className="w-full px-3.5 py-2 text-sm font-mono bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
             />
+          </div>
+
+          {/* Table Capacity / Seats Per Table */}
+          <div>
+            <label className="block text-[10px] uppercase tracking-widest font-semibold text-[#2D2926] mb-1">
+              Quy Mô / Loại Bàn Tiệc (Số Người / Bàn)
+            </label>
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {[10, 12, 8, 6, 5].map((cap) => (
+                <button
+                  key={cap}
+                  type="button"
+                  onClick={() => setTableCapacity(cap)}
+                  className={`px-3 py-1 text-xs font-mono border transition-colors ${
+                    tableCapacity === cap
+                      ? 'bg-[#2D2926] text-white border-[#2D2926] font-bold'
+                      : 'bg-white text-[#2D2926] border-[#EBE3DC] hover:border-[#2D2926]'
+                  }`}
+                >
+                  {cap} người/bàn {cap === 10 ? '(Chuẩn)' : ''}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#2D2926]/70">Hoặc tự nhập:</span>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={tableCapacity}
+                onChange={(e) => setTableCapacity(Math.max(1, Number(e.target.value) || 1))}
+                className="w-24 px-3 py-1 text-xs font-mono bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
+              />
+              <span className="text-xs text-[#2D2926]/60">người / bàn</span>
+            </div>
           </div>
 
           {/* Notes */}

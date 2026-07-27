@@ -23,11 +23,14 @@ import {
   GuestGroup, 
   GuestRSVPStatus, 
   RSVP_STATUS_LABELS, 
-  GUEST_GROUP_LABELS 
+  GUEST_GROUP_LABELS,
+  WeddingDetails 
 } from '../types';
 
 interface GuestListViewProps {
   guests: GuestItem[];
+  weddingDetails?: WeddingDetails;
+  onUpdateWeddingDetails?: (details: WeddingDetails) => void;
   onOpenAddGuest: () => void;
   onEditGuest: (guest: GuestItem) => void;
   onDeleteGuest: (guestId: string) => void;
@@ -37,6 +40,8 @@ interface GuestListViewProps {
 
 export const GuestListView: React.FC<GuestListViewProps> = ({
   guests,
+  weddingDetails,
+  onUpdateWeddingDetails,
   onOpenAddGuest,
   onEditGuest,
   onDeleteGuest,
@@ -46,6 +51,16 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
   const [selectedRsvp, setSelectedRsvp] = useState<string>('ALL');
+  const [localTableCapacity, setLocalTableCapacity] = useState<number>(10);
+
+  const tableCapacity = weddingDetails?.tableCapacity || localTableCapacity;
+
+  const handleTableCapacityChange = (newCapacity: number) => {
+    setLocalTableCapacity(newCapacity);
+    if (weddingDetails && onUpdateWeddingDetails) {
+      onUpdateWeddingDetails({ ...weddingDetails, tableCapacity: newCapacity });
+    }
+  };
 
   // Statistics Calculations
   const totalGuests = guests.length;
@@ -67,7 +82,7 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
   const totalMaybeHeadcount = maybeCount + maybePlusOnes;
   
   const estimatedHeadcountTotal = totalAttendingHeadcount + Math.round(totalMaybeHeadcount * 0.5);
-  const estimatedTablesTotal = Math.ceil(estimatedHeadcountTotal / 10);
+  const estimatedTablesTotal = Math.ceil(estimatedHeadcountTotal / tableCapacity);
 
   // Group Stats
   const groomFamilyCount = guests.filter(g => g.group === 'GROOM_FAMILY').length;
@@ -196,9 +211,9 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
         </div>
 
         {/* Headcount & Table Estimation Highlight - Editorial Banner */}
-        <div className="bg-[#2D2926] text-[#FCFAF7] p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#2D2926]">
+        <div className="bg-[#2D2926] text-[#FCFAF7] p-5 flex flex-col lg:flex-row items-center justify-between gap-4 border border-[#2D2926]">
           <div className="flex items-center gap-4">
-            <div className="p-2.5 bg-white/10 border border-white/20">
+            <div className="p-2.5 bg-white/10 border border-white/20 shrink-0">
               <UtensilsCrossed className="w-6 h-6 text-[#FCFAF7]" />
             </div>
             <div>
@@ -207,13 +222,33 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
               </div>
               <div className="text-lg font-serif italic mt-0.5">
                 Khoảng <span className="text-white font-bold not-italic font-mono">{estimatedHeadcountTotal} người</span> dự tiệc
-                (~<span className="text-white font-bold not-italic font-mono">{estimatedTablesTotal} bàn tiệc</span> - loại 10 người/bàn)
+                (~<span className="text-white font-bold not-italic font-mono">{estimatedTablesTotal} bàn tiệc</span>)
               </div>
             </div>
           </div>
 
-          <div className="text-xs font-mono text-[#D4C3B5] text-right bg-white/5 p-3 border border-white/10">
-            Chắc chắn: {totalAttendingHeadcount} người • Dự phòng từ Có thể: {Math.round(totalMaybeHeadcount * 0.5)} người
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            {/* Interactive Table Type / Seats Selector */}
+            <div className="flex items-center gap-2 bg-white/10 p-2 border border-white/20 text-xs w-full sm:w-auto justify-between sm:justify-start">
+              <span className="text-[#D4C3B5] text-[10px] uppercase tracking-wider font-semibold whitespace-nowrap">Loại bàn:</span>
+              <select
+                value={tableCapacity}
+                onChange={(e) => handleTableCapacityChange(Number(e.target.value))}
+                className="bg-[#1A1816] text-white font-mono font-semibold px-2.5 py-1.5 border border-white/30 focus:outline-none focus:border-white text-xs cursor-pointer"
+                id="select-table-capacity"
+              >
+                <option value={10}>10 người / bàn (Chuẩn)</option>
+                <option value={12}>12 người / bàn (Bàn lớn)</option>
+                <option value={8}>8 người / bàn (Bàn vừa)</option>
+                <option value={6}>6 người / bàn (Bàn nhỏ)</option>
+                <option value={5}>5 người / bàn (Tiệc VIP)</option>
+                <option value={16}>16 người / bàn (Bàn tròn đại)</option>
+              </select>
+            </div>
+
+            <div className="text-xs font-mono text-[#D4C3B5] text-right bg-white/5 p-3 border border-white/10 w-full sm:w-auto">
+              Chắc chắn: {totalAttendingHeadcount} người • Dự phòng từ Có thể: {Math.round(totalMaybeHeadcount * 0.5)} người
+            </div>
           </div>
         </div>
 

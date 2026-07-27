@@ -6,6 +6,7 @@ export const initialWeddingDetails: WeddingDetails = {
   weddingDate: '2026-10-17',
   venue: 'Trung Tâm Tiệc Cưới Bắc Ninh',
   totalBudgetLimit: 250000000,
+  tableCapacity: 10,
   notes: 'Đám cưới Thứ 7, ngày 17/10/2026 tại Bắc Ninh. Lễ gia tiên buổi sáng, tiệc cưới hiện đại buổi tối.',
 };
 

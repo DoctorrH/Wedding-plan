@@ -63,7 +63,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const maybeGuests = guests.filter(g => g.rsvp === 'MAYBE');
   const attendingPlusOnes = attendingGuests.reduce((sum, g) => sum + (g.plusOnes || 0), 0);
   const totalAttendingHeadcount = attendingGuests.length + attendingPlusOnes;
-  const estimatedTables = Math.ceil(totalAttendingHeadcount / 10);
+  const tableCapacity = weddingDetails.tableCapacity || 10;
+  const estimatedTables = Math.ceil(totalAttendingHeadcount / tableCapacity);
 
   // Group costs by Category
   const categoryStats: Record<TaskCategory, { estimated: number; actual: number; deposit: number; count: number }> = {
@@ -245,7 +246,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
             <div className="bg-[#FCFAF7] p-3 border border-[#EBE3DC]">
               <div className="text-2xl font-serif text-[#2D2926]">~{estimatedTables} bàn</div>
-              <div className="uppercase text-[9px] tracking-wider text-[#2D2926]/60 mt-1">Dự kiến (10 người/bàn)</div>
+              <div className="uppercase text-[9px] tracking-wider text-[#2D2926]/60 mt-1">Dự kiến ({tableCapacity} người/bàn)</div>
             </div>
           </div>
 

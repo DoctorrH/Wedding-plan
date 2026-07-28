@@ -23,6 +23,12 @@ export type GuestGroup =
   | 'GROOM_FAMILY'
   | 'BRIDE_FAMILY'
   | 'MUTUAL_FRIENDS'
+  | 'GROOM_FRIENDS'
+  | 'BRIDE_FRIENDS'
+  | 'GROOM_COLLEAGUES'
+  | 'BRIDE_COLLEAGUES'
+  | 'GROOM_VIP'
+  | 'BRIDE_VIP'
   | 'COLLEAGUES'
   | 'VIP';
 
@@ -76,6 +82,24 @@ export const GUEST_GROUP_LABELS: Record<GuestGroup, string> = {
   GROOM_FAMILY: 'Họ nhà trai',
   BRIDE_FAMILY: 'Họ nhà gái',
   MUTUAL_FRIENDS: 'Bạn chung',
+  GROOM_FRIENDS: 'Bạn chú rể',
+  BRIDE_FRIENDS: 'Bạn cô dâu',
+  GROOM_COLLEAGUES: 'Đồng nghiệp chú rể',
+  BRIDE_COLLEAGUES: 'Đồng nghiệp cô dâu',
+  GROOM_VIP: 'Khách VIP chú rể',
+  BRIDE_VIP: 'Khách VIP cô dâu',
   COLLEAGUES: 'Đồng nghiệp',
-  VIP: 'Khách VIP / Họ hàng',
+  VIP: 'Khách VIP',
 };
+
+export const PRIMARY_GUEST_GROUPS: GuestGroup[] = [
+  'GROOM_FAMILY',
+  'BRIDE_FAMILY',
+  'MUTUAL_FRIENDS',
+  'GROOM_FRIENDS',
+  'BRIDE_FRIENDS',
+  'GROOM_COLLEAGUES',
+  'BRIDE_COLLEAGUES',
+  'GROOM_VIP',
+  'BRIDE_VIP',
+];

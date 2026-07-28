@@ -24,6 +24,7 @@ import {
   GuestRSVPStatus, 
   RSVP_STATUS_LABELS, 
   GUEST_GROUP_LABELS,
+  PRIMARY_GUEST_GROUPS,
   WeddingDetails 
 } from '../types';
 
@@ -83,13 +84,6 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
   
   const estimatedHeadcountTotal = totalAttendingHeadcount + Math.round(totalMaybeHeadcount * 0.5);
   const estimatedTablesTotal = Math.ceil(estimatedHeadcountTotal / tableCapacity);
-
-  // Group Stats
-  const groomFamilyCount = guests.filter(g => g.group === 'GROOM_FAMILY').length;
-  const brideFamilyCount = guests.filter(g => g.group === 'BRIDE_FAMILY').length;
-  const mutualFriendsCount = guests.filter(g => g.group === 'MUTUAL_FRIENDS').length;
-  const colleaguesCount = guests.filter(g => g.group === 'COLLEAGUES').length;
-  const vipCount = guests.filter(g => g.group === 'VIP').length;
 
   // Filter Logic
   const filteredGuests = guests.filter(guest => {
@@ -243,27 +237,18 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
         </div>
 
         {/* Group distribution breakdown */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
-          <div className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC]">
-            <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider">Họ nhà trai</span>
-            <strong className="text-[#2D2926] text-sm font-serif">{groomFamilyCount} thiệp</strong>
-          </div>
-          <div className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC]">
-            <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider">Họ nhà gái</span>
-            <strong className="text-[#2D2926] text-sm font-serif">{brideFamilyCount} thiệp</strong>
-          </div>
-          <div className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC]">
-            <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider">Bạn chung</span>
-            <strong className="text-[#2D2926] text-sm font-serif">{mutualFriendsCount} thiệp</strong>
-          </div>
-          <div className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC]">
-            <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider">Đồng nghiệp</span>
-            <strong className="text-[#2D2926] text-sm font-serif">{colleaguesCount} thiệp</strong>
-          </div>
-          <div className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC] col-span-2 sm:col-span-1">
-            <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider">VIP & Họ hàng</span>
-            <strong className="text-[#2D2926] text-sm font-serif">{vipCount} thiệp</strong>
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2 text-center text-xs">
+          {PRIMARY_GUEST_GROUPS.map((grpKey) => {
+            const count = guests.filter(g => g.group === grpKey).length;
+            return (
+              <div key={grpKey} className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC] flex flex-col justify-between">
+                <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider truncate" title={GUEST_GROUP_LABELS[grpKey]}>
+                  {GUEST_GROUP_LABELS[grpKey]}
+                </span>
+                <strong className="text-[#2D2926] text-sm font-serif mt-1">{count} thiệp</strong>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -290,7 +275,7 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
             className="w-full px-3 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
           >
             <option value="ALL">Tất cả nhóm khách ({guests.length})</option>
-            {(Object.keys(GUEST_GROUP_LABELS) as GuestGroup[]).map(grp => (
+            {PRIMARY_GUEST_GROUPS.map(grp => (
               <option key={grp} value={grp}>{GUEST_GROUP_LABELS[grp]}</option>
             ))}
           </select>

@@ -165,7 +165,7 @@ export const initialGuests: GuestItem[] = [
   {
     id: 'guest-3',
     name: 'Anh Lê Hoàng Nam',
-    group: 'COLLEAGUES',
+    group: 'GROOM_COLLEAGUES',
     phone: '0903112233',
     address: '789 Điện Biên Phủ, Q.3, TPHCM',
     rsvp: 'ATTENDING',
@@ -187,7 +187,7 @@ export const initialGuests: GuestItem[] = [
   {
     id: 'guest-5',
     name: 'Anh Vũ Quốc Tuấn',
-    group: 'COLLEAGUES',
+    group: 'GROOM_COLLEAGUES',
     phone: '0918223344',
     address: '56 Cách Mạng Tháng 8, Q.10, TPHCM',
     rsvp: 'MAYBE',
@@ -198,7 +198,7 @@ export const initialGuests: GuestItem[] = [
   {
     id: 'guest-6',
     name: 'Bà Nguyễn Thị Loan',
-    group: 'VIP',
+    group: 'GROOM_VIP',
     phone: '0909998877',
     address: '99 Nguyễn Văn Trỗi, Q. Phú Nhuận, TPHCM',
     rsvp: 'ATTENDING',

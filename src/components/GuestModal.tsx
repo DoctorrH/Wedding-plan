@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, User, Phone, MapPin, FileText, Users } from 'lucide-react';
-import { GuestItem, GuestGroup, GuestRSVPStatus, GUEST_GROUP_LABELS } from '../types';
+import { GuestItem, GuestGroup, GuestRSVPStatus, GUEST_GROUP_LABELS, PRIMARY_GUEST_GROUPS } from '../types';
 
 interface GuestModalProps {
   isOpen: boolean;
@@ -110,7 +110,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({
                 onChange={(e) => setGroup(e.target.value as GuestGroup)}
                 className="w-full px-3.5 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
               >
-                {(Object.keys(GUEST_GROUP_LABELS) as GuestGroup[]).map((grpKey) => (
+                {PRIMARY_GUEST_GROUPS.map((grpKey) => (
                   <option key={grpKey} value={grpKey}>
                     {GUEST_GROUP_LABELS[grpKey]}
                   </option>

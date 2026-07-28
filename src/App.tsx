@@ -47,6 +47,7 @@ import { AddCategoryModal } from './components/AddCategoryModal';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 import { AuthModal } from './components/AuthModal';
 import { AuthScreen } from './components/AuthScreen';
+import { ShareCodeModal } from './components/ShareCodeModal';
 
 export default function App() {
   // Auth State
@@ -127,6 +128,7 @@ export default function App() {
 
   const [isEditCoupleModalOpen, setIsEditCoupleModalOpen] = useState(false);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Edit Category Modal State
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
@@ -344,6 +346,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenEditCouple={() => setIsEditCoupleModalOpen(true)}
         onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+        onOpenShareModal={() => setIsShareModalOpen(true)}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         currentUser={currentUser}
         onResetData={handleResetData}
@@ -513,6 +516,16 @@ export default function App() {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      <ShareCodeModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        weddingDetails={weddingDetails}
+        categoryNames={categoryNames}
+        tasks={tasks}
+        guests={guests}
+        currentUserId={currentUser?.uid}
       />
     </div>
   );

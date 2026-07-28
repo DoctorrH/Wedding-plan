@@ -7,7 +7,8 @@ import {
   collection, 
   onSnapshot, 
   deleteDoc, 
-  writeBatch 
+  writeBatch,
+  getDocs
 } from 'firebase/firestore';
 import { 
   getAuth, 
@@ -247,3 +248,129 @@ export function deleteGuestFromDb(guestId: string, userId?: string) {
   const guestsCollRef = getUserCollRef('guests', userId);
   return deleteDoc(doc(guestsCollRef, guestId));
 }
+
+// Share & Copy Data Code Logic
+export interface ShareDataPayload {
+  code: string;
+  createdAt: string;
+  createdByName: string;
+  weddingDetails: WeddingDetails;
+  categoryNames: Record<TaskCategory, string>;
+  tasks: TaskItem[];
+  guests: GuestItem[];
+}
+
+export function generateRandomCode(length = 6): string {
+  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+export async function createShareCode(data: {
+  weddingDetails: WeddingDetails;
+  categoryNames: Record<TaskCategory, string>;
+  tasks: TaskItem[];
+  guests: GuestItem[];
+}): Promise<string> {
+  await ensureAuth();
+  
+  let attempts = 0;
+  let shareCode = '';
+  let docRef;
+
+  while (attempts < 5) {
+    shareCode = generateRandomCode(6);
+    docRef = doc(db, 'shares', shareCode);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) {
+      break;
+    }
+    attempts++;
+  }
+
+  const payload: ShareDataPayload = {
+    code: shareCode,
+    createdAt: new Date().toISOString(),
+    createdByName: `${data.weddingDetails.groomName || 'Chú rể'} & ${data.weddingDetails.brideName || 'Cô dâu'}`,
+    weddingDetails: data.weddingDetails,
+    categoryNames: data.categoryNames,
+    tasks: data.tasks,
+    guests: data.guests,
+  };
+
+  await setDoc(docRef!, payload);
+  return shareCode;
+}
+
+export async function getShareData(code: string): Promise<ShareDataPayload | null> {
+  await ensureAuth();
+  const cleanCode = code.trim().toUpperCase();
+  if (!cleanCode) return null;
+
+  const docRef = doc(db, 'shares', cleanCode);
+  const snap = await getDoc(docRef);
+
+  if (snap.exists()) {
+    return snap.data() as ShareDataPayload;
+  }
+  return null;
+}
+
+export async function importShareDataToUser(payload: ShareDataPayload, userId?: string): Promise<void> {
+  await ensureAuth();
+  const uid = getUserUid(userId);
+
+  // 1. Save Wedding Details & Categories
+  await saveWeddingDetailsToDb(payload.weddingDetails, uid);
+  await saveCategoryNamesToDb(payload.categoryNames, uid);
+
+  // 2. Clear existing user tasks and write new ones
+  const tasksCollRef = getUserCollRef('tasks', uid);
+  const existingTasksSnap = await getDocs(tasksCollRef);
+  
+  const batch1 = writeBatch(db);
+  existingTasksSnap.forEach((docSnap) => {
+    batch1.delete(docSnap.ref);
+  });
+  await batch1.commit();
+
+  // Write imported tasks
+  if (payload.tasks && payload.tasks.length > 0) {
+    const batch2 = writeBatch(db);
+    payload.tasks.forEach((task) => {
+      const taskDocRef = doc(tasksCollRef, task.id || doc(tasksCollRef).id);
+      const { id, ...rest } = task;
+      batch2.set(taskDocRef, rest);
+    });
+    await batch2.commit();
+  }
+
+  // 3. Clear existing user guests and write new ones
+  const guestsCollRef = getUserCollRef('guests', uid);
+  const existingGuestsSnap = await getDocs(guestsCollRef);
+
+  const batch3 = writeBatch(db);
+  existingGuestsSnap.forEach((docSnap) => {
+    batch3.delete(docSnap.ref);
+  });
+  await batch3.commit();
+
+  // Write imported guests
+  if (payload.guests && payload.guests.length > 0) {
+    const batch4 = writeBatch(db);
+    payload.guests.forEach((guest) => {
+      const guestDocRef = doc(guestsCollRef, guest.id || doc(guestsCollRef).id);
+      const { id, ...rest } = guest;
+      batch4.set(guestDocRef, rest);
+    });
+    await batch4.commit();
+  }
+
+  // 4. Mark meta doc as seeded
+  const metaDocRef = getUserDocRef('meta', uid);
+  await setDoc(metaDocRef, { tasksSeeded: true, guestsSeeded: true }, { merge: true });
+}
+

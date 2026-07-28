@@ -12,7 +12,8 @@ import {
   Printer,
   User as UserIcon,
   LogOut,
-  LogIn
+  LogIn,
+  Share2
 } from 'lucide-react';
 import { WeddingDetails } from '../types';
 import { getDaysRemaining } from '../lib/utils';
@@ -24,6 +25,7 @@ interface NavbarProps {
   setActiveTab: (tab: 'dashboard' | 'calendar' | 'tasks' | 'guests') => void;
   onOpenEditCouple: () => void;
   onOpenAiAssistant: () => void;
+  onOpenShareModal: () => void;
   onOpenAuth: () => void;
   currentUser: User | null;
   onResetData: () => void;
@@ -39,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenEditCouple,
   onOpenAiAssistant,
+  onOpenShareModal,
   onOpenAuth,
   currentUser,
   onResetData,
@@ -136,7 +139,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-
+            {/* Share / Copy Data Code Button */}
+            <button
+              onClick={onOpenShareModal}
+              className="flex items-center gap-1.5 px-3 py-2 bg-[#2D2926] text-white text-xs uppercase tracking-wider font-bold hover:bg-[#423D38] transition-colors shadow-2xs"
+              title="Sao chép hoặc nhập dữ liệu giữa các tài khoản qua mã ngẫu nhiên"
+              id="btn-open-share-modal"
+            >
+              <Share2 className="w-3.5 h-3.5 text-[#D4C3B5]" />
+              <span>Mã Sao Chép</span>
+            </button>
 
             {/* Excel Export & Reset actions */}
             <div className="hidden md:flex items-center gap-1 border border-[#D4C3B5] bg-white p-1">

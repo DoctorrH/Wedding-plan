@@ -303,7 +303,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
               <div>
                 <label className="block text-[10px] uppercase tracking-wider text-[#2D2926]/70 mb-1">
-                  3. Tiền đã đặt cọc
+                  3. Số tiền đã cọc / thanh toán
                 </label>
                 <input
                   type="number"

@@ -377,7 +377,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                             <span className="font-mono font-medium text-[#2D2926]">{formatVND(task.estimatedCost)}</span>
                           </div>
                           <div>
-                            <span className="uppercase text-[9px] tracking-wider text-[#2D2926]/50 block">Đã cọc:</span>
+                            <span className="uppercase text-[9px] tracking-wider text-[#2D2926]/50 block">Đã cọc/TT:</span>
                             <span className="font-mono font-medium text-[#2D2926]">{formatVND(task.depositPaid)}</span>
                           </div>
                         </div>

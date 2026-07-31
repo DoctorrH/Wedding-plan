@@ -144,12 +144,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Card 3: Đã Đặt Cọc */}
+        {/* Card 3: Đã Đặt Cọc / Thanh toán */}
         <div className="bg-white p-6 border border-[#EBE3DC] flex flex-col justify-between shadow-2xs">
           <div>
             <div className="flex items-center justify-between mb-3">
               <span className="uppercase text-[11px] tracking-[0.18em] font-bold text-[#1A1816]">
-                Tổng Tiền Đã Cọc
+                Đã Cọc / Thanh Toán
               </span>
               <div className="p-2 bg-[#F5F1EE] text-[#1A1816]">
                 <CreditCard className="w-4 h-4" />
@@ -307,7 +307,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               Dự Toán & Thực Chi Ngân Sách Chi Tiết
             </h2>
             <p className="uppercase text-[10px] tracking-[0.2em] text-[#2D2926]/60 mt-1">
-              Bảng kê các khoản dự tính, tiền đặt cọc và nghĩa vụ tài chính còn lại
+              Bảng kê các khoản dự tính, số tiền đã cọc / thanh toán và nghĩa vụ tài chính còn lại
             </p>
           </div>
           <button
@@ -329,7 +329,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <th className="py-3 px-3 font-normal">Danh Mục</th>
                 <th className="py-3 px-3 font-normal text-right">Dự Toán (VNĐ)</th>
                 <th className="py-3 px-3 font-normal text-right">Thực Chi (VNĐ)</th>
-                <th className="py-3 px-3 font-normal text-right">Đã Đặt Cọc</th>
+                <th className="py-3 px-3 font-normal text-right">Đã Cọc / TT</th>
                 <th className="py-3 px-3 font-normal text-right">Còn Phải Trả</th>
                 <th className="py-3 px-4 font-normal">Ghi Chú & Nhà Cung Cấp</th>
               </tr>

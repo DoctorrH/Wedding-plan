@@ -154,7 +154,7 @@ export const AuthScreen: React.FC = () => {
                   <span>Quản Lý Ngân Sách</span>
                 </div>
                 <p className="text-xs text-[#786F68] leading-normal">
-                  Theo dõi tổng dự toán, thực tế, tiền cọc và số tiền còn lại phải thanh toán cho từng nhà cung cấp.
+                  Theo dõi tổng dự toán, thực tế, số tiền đã cọc / thanh toán và số tiền còn lại phải thanh toán cho từng nhà cung cấp.
                 </p>
               </div>
 

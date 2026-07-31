@@ -404,7 +404,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                               </span>
                             </div>
                             <div>
-                              <span className="uppercase text-[9px] tracking-wider text-[#2D2926]/50 block">Đã cọc:</span>
+                              <span className="uppercase text-[9px] tracking-wider text-[#2D2926]/50 block">Đã cọc/TT:</span>
                               <span className="font-mono text-[#2D2926]">{formatVND(task.depositPaid)}</span>
                             </div>
                             <div>
@@ -539,7 +539,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
             <span className="text-white">{formatVND(filteredTotalActual)}</span>
           </div>
           <div>
-            <span className="text-[#D4C3B5] uppercase text-[10px] tracking-wider">Tổng Đã Cọc: </span>
+            <span className="text-[#D4C3B5] uppercase text-[10px] tracking-wider">Tổng Đã Cọc / TT: </span>
             <span className="text-white">{formatVND(filteredTotalDeposit)}</span>
           </div>
           <div>

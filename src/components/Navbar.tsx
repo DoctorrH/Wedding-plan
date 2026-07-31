@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isAnonymous = currentUser?.isAnonymous ?? true;
 
   return (
-    <header className="bg-[#FCFAF7] border-b border-[#D4C3B5] sticky top-0 z-30">
+    <header className="bg-[#FCFAF7] border-b border-[#D4C3B5] sticky top-0 z-30 pt-[env(safe-area-inset-top)]">
       {/* Editorial Header Section */}
       <div className="border-b border-[#EBE3DC] px-4 py-5 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-[#2D2926]">

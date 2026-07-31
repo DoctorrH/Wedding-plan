@@ -194,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Navigation Tabs - Editorial Style */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6">
         <nav className="flex space-x-2 sm:space-x-6 overflow-x-auto py-3 scrollbar-none" aria-label="Tabs">
           <button
             onClick={() => setActiveTab('dashboard')}

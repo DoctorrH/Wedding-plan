@@ -32,6 +32,7 @@ import {
 
 // UI Components
 import { Navbar } from './components/Navbar';
+import { BottomNavigation } from './components/BottomNavigation';
 import { DashboardView } from './components/DashboardView';
 import { CalendarView } from './components/CalendarView';
 import { TaskListView } from './components/TaskListView';
@@ -338,7 +339,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-rose-200 selection:text-rose-900">
+    <div className="min-h-[100dvh] bg-slate-50 text-slate-900 font-sans antialiased selection:bg-rose-200 selection:text-rose-900">
       {/* Top Navbar Header */}
       <Navbar
         weddingDetails={weddingDetails}
@@ -357,7 +358,7 @@ export default function App() {
       />
 
       {/* Main Body View */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-24 md:pb-6">
         {activeTab === 'dashboard' && (
           <DashboardView
             tasks={tasks}
@@ -443,8 +444,15 @@ export default function App() {
         )}
       </main>
 
+      <BottomNavigation
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        pendingTasksCount={pendingTasksCount}
+        attendingGuestsCount={attendingGuestsCount}
+      />
+
       {/* FOOTER */}
-      <footer className="border-t border-[#EBE3DC] bg-white py-4 text-center text-xs text-[#786F68] font-medium tracking-wider">
+      <footer className="border-t border-[#EBE3DC] bg-white py-4 text-center text-xs text-[#786F68] font-medium tracking-wider hidden md:block">
         <p>by NTH</p>
       </footer>
 

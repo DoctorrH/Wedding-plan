@@ -241,6 +241,18 @@ export default function App() {
     }
   };
 
+  const handleQuickToggleInvited = async (guestId: string, isInvited: boolean) => {
+    const targetGuest = guests.find(g => g.id === guestId);
+    if (!targetGuest) return;
+
+    const { id, ...rest } = targetGuest;
+    try {
+      await saveGuestToDb({ ...rest, isInvited }, guestId, currentUser?.uid);
+    } catch (err) {
+      console.error('Lỗi khi cập nhật trạng thái mời:', err);
+    }
+  };
+
   // WEDDING DETAILS & CATEGORIES HANDLERS
   const handleSaveWeddingDetails = async (details: WeddingDetails) => {
     try {
@@ -439,6 +451,7 @@ export default function App() {
             }}
             onDeleteGuest={handleDeleteGuest}
             onQuickUpdateRSVP={handleQuickUpdateRSVP}
+            onQuickToggleInvited={handleQuickToggleInvited}
             onExportExcel={handleExportGuestsExcel}
           />
         )}

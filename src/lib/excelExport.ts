@@ -129,12 +129,13 @@ export function exportGuestsToExcel(
 
   const data: any[][] = [
     [title],
-    [`Ngày cưới: ${dateStr} | Tổng thiệp mời: ${guests.length}`],
+    [`Ngày cưới: ${dateStr} | Tổng danh sách dự kiến: ${guests.length} khách`],
     [], // empty row separator
     [
       'STT',
       'Họ Và Tên Khách Mời',
       'Nhóm Khách',
+      'Tình Trạng Mời',
       'Số Điện Thoại',
       'Địa Chỉ',
       'Trạng Thái RSVP',
@@ -147,9 +148,13 @@ export function exportGuestsToExcel(
 
   let totalAttendingCards = 0;
   let totalHeadcount = 0;
+  let totalInvited = 0;
 
   guests.forEach((g, idx) => {
     const groupLabel = GUEST_GROUP_LABELS[g.group] || g.group;
+    const invitationText = g.isInvited ? 'Đã mời / Gửi thiệp' : 'Chưa mời (Dự kiến)';
+    if (g.isInvited) totalInvited += 1;
+
     let rsvpText = 'Chờ xác nhận';
     if (g.rsvp === 'ATTENDING') {
       rsvpText = 'Chắc chắn tham gia';
@@ -167,6 +172,7 @@ export function exportGuestsToExcel(
       idx + 1,
       g.name,
       groupLabel,
+      invitationText,
       g.phone || '-',
       g.address || '-',
       rsvpText,
@@ -181,8 +187,9 @@ export function exportGuestsToExcel(
   data.push([]);
   data.push([
     'TỔNG CỘNG',
-    `${guests.length} Thiệp`,
+    `${guests.length} Khách dự kiến`,
     '',
+    `Đã mời: ${totalInvited} thiệp`,
     '',
     '',
     `Tham dự: ${totalAttendingCards} thiệp`,
@@ -199,6 +206,7 @@ export function exportGuestsToExcel(
     { wch: 6 },  // STT
     { wch: 26 }, // Họ tên
     { wch: 20 }, // Nhóm
+    { wch: 22 }, // Tình trạng mời
     { wch: 16 }, // SĐT
     { wch: 30 }, // Địa chỉ
     { wch: 22 }, // RSVP

@@ -16,7 +16,12 @@ import {
   Filter,
   PieChart as PieIcon,
   UtensilsCrossed,
-  Sparkles
+  Sparkles,
+  MailCheck,
+  Send,
+  CheckSquare,
+  Square,
+  Mail
 } from 'lucide-react';
 import { 
   GuestItem, 
@@ -36,6 +41,7 @@ interface GuestListViewProps {
   onEditGuest: (guest: GuestItem) => void;
   onDeleteGuest: (guestId: string) => void;
   onQuickUpdateRSVP: (guestId: string, rsvp: GuestRSVPStatus) => void;
+  onQuickToggleInvited?: (guestId: string, isInvited: boolean) => void;
   onExportExcel?: () => void;
 }
 
@@ -47,10 +53,12 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
   onEditGuest,
   onDeleteGuest,
   onQuickUpdateRSVP,
+  onQuickToggleInvited,
   onExportExcel,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
+  const [selectedInvited, setSelectedInvited] = useState<string>('ALL');
   const [selectedRsvp, setSelectedRsvp] = useState<string>('ALL');
   const [localTableCapacity, setLocalTableCapacity] = useState<number>(10);
 
@@ -65,6 +73,12 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
 
   // Statistics Calculations
   const totalGuests = guests.length;
+  const invitedList = guests.filter(g => g.isInvited);
+  const uninvitedList = guests.filter(g => !g.isInvited);
+  const invitedCount = invitedList.length;
+  const uninvitedCount = uninvitedList.length;
+  const invitedPercentage = totalGuests > 0 ? Math.round((invitedCount / totalGuests) * 100) : 0;
+
   const attendingList = guests.filter(g => g.rsvp === 'ATTENDING');
   const maybeList = guests.filter(g => g.rsvp === 'MAYBE');
   const declinedList = guests.filter(g => g.rsvp === 'DECLINED');
@@ -94,9 +108,13 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
       guest.notes.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesGroup = selectedGroup === 'ALL' || guest.group === selectedGroup;
+    const matchesInvited = 
+      selectedInvited === 'ALL' ||
+      (selectedInvited === 'INVITED' && !!guest.isInvited) ||
+      (selectedInvited === 'UNINVITED' && !guest.isInvited);
     const matchesRsvp = selectedRsvp === 'ALL' || guest.rsvp === selectedRsvp;
 
-    return matchesSearch && matchesGroup && matchesRsvp;
+    return matchesSearch && matchesGroup && matchesInvited && matchesRsvp;
   });
 
   return (
@@ -107,37 +125,65 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
           <div>
             <h2 className="text-2xl font-serif italic font-bold text-[#1A1816] flex items-center gap-2">
               <Users className="w-5 h-5 text-[#1A1816]" />
-              <span>Thống Kê Khách Mời & Xác Nhận Tham Dự (RSVP)</span>
+              <span>Quản Lý Khách Mời & Tiến Độ Mời Cưới</span>
             </h2>
             <p className="uppercase text-[11px] font-bold tracking-[0.18em] text-[#1A1816] mt-1">
-              Phân tích số lượng khách dự kiến, người đi kèm & tính toán bàn tiệc chính xác
+              Phân tách khách dự kiến mời & khách đã gửi thiệp, kiểm soát phản hồi RSVP và bàn tiệc
             </p>
           </div>
 
           <div className="flex items-center gap-2 self-start md:self-auto">
-
-
             <button
               onClick={onOpenAddGuest}
               className="flex items-center gap-2 px-5 py-2.5 bg-[#2D2926] text-[#FCFAF7] font-semibold text-xs uppercase tracking-wider transition-colors hover:bg-black"
               id="btn-add-guest-top"
             >
               <Plus className="w-4 h-4" />
-              <span>Thêm Khách Mời Mới</span>
+              <span>Thêm Khách Mới</span>
             </button>
           </div>
         </div>
 
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {/* Card 1: Tổng Thiệp Mời */}
+          {/* Card 1: Tổng Danh Sách Dự Kiến */}
           <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
-            <div className="uppercase text-[9px] tracking-widest text-[#2D2926]/60">TỔNG THIỆP MỜI</div>
+            <div className="uppercase text-[9px] tracking-widest text-[#2D2926]/60">DỰ KIẾN MỜI</div>
             <div className="text-2xl font-serif text-[#2D2926] mt-1">{totalGuests}</div>
-            <div className="text-[11px] text-[#2D2926]/50 mt-1">Danh sách khách mời</div>
+            <div className="text-[11px] text-[#2D2926]/60 mt-1 font-mono">
+              Tổng danh sách dự kiến
+            </div>
           </div>
 
-          {/* Card 2: Chắc Chắn Tham Gia */}
+          {/* Card 2: Đã Mời / Đã Gửi Thiệp */}
+          <div className="bg-[#FCFAF7] p-4 border border-emerald-300 bg-emerald-50/30">
+            <div className="flex items-center justify-between">
+              <span className="uppercase text-[9px] tracking-widest text-emerald-800 font-bold">ĐÃ GỬI THIỆP / ĐÃ MỜI</span>
+              <MailCheck className="w-4 h-4 text-emerald-700" />
+            </div>
+            <div className="text-2xl font-serif text-emerald-900 mt-1">
+              {invitedCount} <span className="text-xs font-mono font-normal text-emerald-700/80">({invitedPercentage}%)</span>
+            </div>
+            <div className="text-[11px] text-emerald-800/80 mt-1 font-mono">
+              Đã gửi lời mời chính thức
+            </div>
+          </div>
+
+          {/* Card 3: Chưa Mời (Dự Kiến) */}
+          <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
+            <div className="flex items-center justify-between">
+              <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">CHƯA MỜI (DỰ KIẾN)</span>
+              <Clock className="w-4 h-4 text-[#2D2926]/50" />
+            </div>
+            <div className="text-2xl font-serif text-[#2D2926] mt-1">
+              {uninvitedCount} <span className="text-xs font-mono font-normal text-[#2D2926]/60">({100 - invitedPercentage}%)</span>
+            </div>
+            <div className="text-[11px] text-[#2D2926]/70 mt-1">
+              Cần chuẩn bị gửi thiệp
+            </div>
+          </div>
+
+          {/* Card 4: Chắc Chắn Tham Gia */}
           <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
             <div className="flex items-center justify-between">
               <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">CHẮC CHẮN ĐI</span>
@@ -147,49 +193,21 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
               {attendingCount} <span className="text-xs font-mono font-normal text-[#2D2926]/60">({totalGuests > 0 ? Math.round((attendingCount / totalGuests) * 100) : 0}%)</span>
             </div>
             <div className="text-[11px] text-[#2D2926]/70 mt-1 font-mono">
-              + {attendingPlusOnes} người đi kèm ({totalAttendingHeadcount} suất)
+              +{attendingPlusOnes} đi kèm = {totalAttendingHeadcount} suất
             </div>
           </div>
 
-          {/* Card 3: Có Thể Tham Gia */}
+          {/* Card 5: Có Thể & Chờ Phản Hồi */}
           <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
             <div className="flex items-center justify-between">
-              <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">CÓ THỂ ĐI</span>
-              <HelpCircle className="w-4 h-4 text-[#2D2926]/60" />
+              <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">CHƯA CHỐT RSVP</span>
+              <HelpCircle className="w-4 h-4 text-[#2D2926]/50" />
             </div>
             <div className="text-2xl font-serif text-[#2D2926] mt-1">
-              {maybeCount} <span className="text-xs font-mono font-normal text-[#2D2926]/60">({totalGuests > 0 ? Math.round((maybeCount / totalGuests) * 100) : 0}%)</span>
+              {maybeCount + pendingCount}
             </div>
             <div className="text-[11px] text-[#2D2926]/70 mt-1">
-              Chờ chốt lại sát ngày
-            </div>
-          </div>
-
-          {/* Card 4: Không Tham Gia */}
-          <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
-            <div className="flex items-center justify-between">
-              <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">KHÔNG ĐI</span>
-              <UserX className="w-4 h-4 text-[#2D2926]/40" />
-            </div>
-            <div className="text-2xl font-serif text-[#2D2926] mt-1">
-              {declinedCount} <span className="text-xs font-mono font-normal text-[#2D2926]/60">({totalGuests > 0 ? Math.round((declinedCount / totalGuests) * 100) : 0}%)</span>
-            </div>
-            <div className="text-[11px] text-[#2D2926]/70 mt-1">
-              Đã báo bận
-            </div>
-          </div>
-
-          {/* Card 5: Chờ Phản Hồi */}
-          <div className="bg-[#FCFAF7] p-4 border border-[#EBE3DC]">
-            <div className="flex items-center justify-between">
-              <span className="uppercase text-[9px] tracking-widest text-[#2D2926] font-bold">CHỜ PHẢN HỒI</span>
-              <Clock className="w-4 h-4 text-[#2D2926]/40" />
-            </div>
-            <div className="text-2xl font-serif text-[#2D2926] mt-1">
-              {pendingCount} <span className="text-xs font-mono font-normal text-[#2D2926]/60">({totalGuests > 0 ? Math.round((pendingCount / totalGuests) * 100) : 0}%)</span>
-            </div>
-            <div className="text-[11px] text-[#2D2926]/70 mt-1">
-              Cần nhắc thiệp
+              {maybeCount} Có thể • {pendingCount} Chờ hồi âm
             </div>
           </div>
         </div>
@@ -240,12 +258,16 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-2 text-center text-xs">
           {PRIMARY_GUEST_GROUPS.map((grpKey) => {
             const count = guests.filter(g => g.group === grpKey).length;
+            const grpInvited = guests.filter(g => g.group === grpKey && g.isInvited).length;
             return (
               <div key={grpKey} className="bg-[#FCFAF7] p-2.5 border border-[#EBE3DC] flex flex-col justify-between">
                 <span className="text-[#2D2926]/60 block text-[10px] uppercase tracking-wider truncate" title={GUEST_GROUP_LABELS[grpKey]}>
                   {GUEST_GROUP_LABELS[grpKey]}
                 </span>
                 <strong className="text-[#2D2926] text-sm font-serif mt-1">{count} thiệp</strong>
+                <span className="text-[10px] font-mono text-[#2D2926]/60 mt-0.5">
+                  Đã mời: {grpInvited}/{count}
+                </span>
               </div>
             );
           })}
@@ -255,7 +277,7 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
       {/* GUEST LIST TABLE & FILTERS */}
       <div className="bg-white border border-[#EBE3DC] overflow-hidden">
         {/* Controls Bar */}
-        <div className="p-4 bg-[#FCFAF7] border-b border-[#EBE3DC] grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 bg-[#FCFAF7] border-b border-[#EBE3DC] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Search */}
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-3 text-[#2D2926]/40" />
@@ -280,17 +302,28 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
             ))}
           </select>
 
+          {/* Invitation Status Filter (Mục Tick Đã Mời / Dự Kiến) */}
+          <select
+            value={selectedInvited}
+            onChange={(e) => setSelectedInvited(e.target.value)}
+            className="w-full px-3 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926] font-medium"
+          >
+            <option value="ALL">Tất cả tình trạng mời ({guests.length})</option>
+            <option value="INVITED">✓ Đã gửi thiệp / Đã mời ({invitedCount})</option>
+            <option value="UNINVITED">⏳ Chưa mời - Chỉ dự kiến ({uninvitedCount})</option>
+          </select>
+
           {/* RSVP Status Filter */}
           <select
             value={selectedRsvp}
             onChange={(e) => setSelectedRsvp(e.target.value)}
             className="w-full px-3 py-2 text-xs bg-white border border-[#EBE3DC] focus:outline-none focus:border-[#2D2926] text-[#2D2926]"
           >
-            <option value="ALL">Tất cả trạng thái RSVP</option>
-            <option value="ATTENDING">Chắc chắn tham gia</option>
-            <option value="MAYBE">Có thể tham gia</option>
-            <option value="DECLINED">Không tham gia</option>
-            <option value="PENDING">Chờ xác nhận</option>
+            <option value="ALL">Tất cả phản hồi RSVP</option>
+            <option value="ATTENDING">✓ Chắc chắn tham gia</option>
+            <option value="MAYBE">❓ Có thể tham gia</option>
+            <option value="DECLINED">✕ Không tham gia</option>
+            <option value="PENDING">⏳ Chờ xác nhận</option>
           </select>
         </div>
 
@@ -301,6 +334,9 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
               <tr className="bg-[#FCFAF7] text-[#2D2926] text-[10px] uppercase tracking-[0.2em] border-b border-[#EBE3DC]">
                 <th className="py-3.5 px-4 font-semibold">Khách Mời</th>
                 <th className="py-3.5 px-3 font-semibold">Nhóm</th>
+                <th className="py-3.5 px-3 font-semibold text-center" title="Tick để đánh dấu khách đã được mời hay mới chỉ trong danh sách dự kiến">
+                  Đã Mời?
+                </th>
                 <th className="py-3.5 px-3 font-semibold">Số Điện Thoại & Địa Chỉ</th>
                 <th className="py-3.5 px-3 font-semibold">Xác Nhận Tham Dự (RSVP)</th>
                 <th className="py-3.5 px-3 text-center font-semibold">Đi Kèm</th>
@@ -312,16 +348,22 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
             <tbody className="divide-y divide-[#EBE3DC] text-[#2D2926]">
               {filteredGuests.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[#2D2926]/50 italic font-serif">
-                    Chưa có thông tin khách mời phù hợp. Bấm "Thêm Khách Mời Mới" để cập nhật!
+                  <td colSpan={9} className="py-12 text-center text-[#2D2926]/50 italic font-serif">
+                    Chưa có thông tin khách mời phù hợp với bộ lọc. Bấm "Thêm Khách Mới" để cập nhật!
                   </td>
                 </tr>
               ) : (
                 filteredGuests.map((guest, idx) => {
                   const groupLabel = GUEST_GROUP_LABELS[guest.group];
+                  const isInvited = !!guest.isInvited;
 
                   return (
-                    <tr key={guest.id} className="hover:bg-[#FCFAF7] transition-colors">
+                    <tr 
+                      key={guest.id} 
+                      className={`hover:bg-[#FCFAF7] transition-colors ${
+                        isInvited ? 'bg-white' : 'bg-[#FCFAF7]/40'
+                      }`}
+                    >
                       {/* Name */}
                       <td className="py-3.5 px-4 font-medium text-[#2D2926] whitespace-nowrap">
                         <div className="flex items-center gap-2">
@@ -335,6 +377,40 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
                         <span className="inline-block text-[10px] uppercase tracking-wider bg-[#F5F1EE] text-[#2D2926] px-2.5 py-1 border border-[#D4C3B5]">
                           {groupLabel}
                         </span>
+                      </td>
+
+                      {/* TÌNH TRẠNG MỜI (MỤC TICK: ĐÃ MỜI HAY CHỈ DỰ KIẾN) */}
+                      <td className="py-3.5 px-3 whitespace-nowrap text-center">
+                        <label 
+                          className="inline-flex items-center gap-2 cursor-pointer select-none group px-2 py-1 border transition-all duration-150 hover:shadow-xs"
+                          style={{
+                            backgroundColor: isInvited ? '#ECFDF5' : '#FCFAF7',
+                            borderColor: isInvited ? '#A7F3D0' : '#EBE3DC'
+                          }}
+                          title={isInvited ? 'Đã mời/gửi thiệp (Bấm để chuyển về Dự kiến)' : 'Chưa mời - Dự kiến (Bấm để đánh dấu Đã mời)'}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isInvited}
+                            onChange={(e) => onQuickToggleInvited?.(guest.id, e.target.checked)}
+                            className="w-4 h-4 accent-[#2D2926] cursor-pointer"
+                          />
+                          <span className={`text-[11px] font-semibold flex items-center gap-1 ${
+                            isInvited ? 'text-emerald-800' : 'text-[#786F68]'
+                          }`}>
+                            {isInvited ? (
+                              <>
+                                <MailCheck className="w-3.5 h-3.5 text-emerald-700" />
+                                <span>Đã mời</span>
+                              </>
+                            ) : (
+                              <>
+                                <Send className="w-3 h-3 text-[#786F68]/70" />
+                                <span>Dự kiến</span>
+                              </>
+                            )}
+                          </span>
+                        </label>
                       </td>
 
                       {/* Phone & Address */}
@@ -416,9 +492,12 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="bg-[#FCFAF7] p-4 text-xs text-[#2D2926]/70 uppercase tracking-wider font-mono border-t border-[#EBE3DC] flex justify-between items-center">
-          <span>Hiển thị {filteredGuests.length} / {guests.length} khách mời</span>
-          <span>Chắc chắn tham gia: {attendingCount} thiệp ({totalAttendingHeadcount} người dự)</span>
+        <div className="bg-[#FCFAF7] p-4 text-xs text-[#2D2926]/70 uppercase tracking-wider font-mono border-t border-[#EBE3DC] flex flex-col sm:flex-row justify-between items-center gap-2">
+          <span>Hiển thị {filteredGuests.length} / {guests.length} khách dự kiến</span>
+          <div className="flex items-center gap-4">
+            <span className="text-emerald-800 font-semibold">Đã mời: {invitedCount} thiệp ({invitedPercentage}%)</span>
+            <span>Chắc chắn tham gia: {attendingCount} thiệp ({totalAttendingHeadcount} người dự)</span>
+          </div>
         </div>
       </div>
     </div>

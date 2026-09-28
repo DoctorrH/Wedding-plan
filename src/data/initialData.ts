@@ -150,6 +150,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 1,
     tableNumber: 'Bàn 01 - Họ Nhà Trai',
     notes: 'Bác ruột chú rể - Đại diện phát biểu lễ gia tiên.',
+    isInvited: true,
   },
   {
     id: 'guest-2',
@@ -161,6 +162,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 1,
     tableNumber: 'Bàn 02 - Họ Nhà Gái',
     notes: 'Dì ruột cô dâu - Bàn đón khách họ nhà gái.',
+    isInvited: true,
   },
   {
     id: 'guest-3',
@@ -172,6 +174,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 0,
     tableNumber: 'Bàn 08 - Công Ty ABC',
     notes: 'Giám đốc công ty chú rể.',
+    isInvited: true,
   },
   {
     id: 'guest-4',
@@ -183,6 +186,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 1,
     tableNumber: 'Bàn 12 - Bạn Đại Học',
     notes: 'Bạn thân nhóm đại học bách khoa.',
+    isInvited: true,
   },
   {
     id: 'guest-5',
@@ -194,6 +198,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 1,
     tableNumber: 'Chưa xếp',
     notes: 'Đang đi công tác Hà Nội, sẽ báo lại trước 3 ngày.',
+    isInvited: false,
   },
   {
     id: 'guest-6',
@@ -205,6 +210,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 1,
     tableNumber: 'Bàn VIP 01',
     notes: 'Họ hàng xa ở Hà Nội bay vào tham dự.',
+    isInvited: true,
   },
   {
     id: 'guest-7',
@@ -216,6 +222,7 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 0,
     tableNumber: 'N/A',
     notes: 'Kẹt lịch trình du lịch gia đình đã đặt trước.',
+    isInvited: false,
   },
   {
     id: 'guest-8',
@@ -227,5 +234,6 @@ export const initialGuests: GuestItem[] = [
     plusOnes: 0,
     tableNumber: 'Chưa xếp',
     notes: 'Đã gửi thiệp ngày 05/10, chưa nhận câu trả lời.',
+    isInvited: true,
   },
 ];

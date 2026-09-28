@@ -59,6 +59,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   // Guest Stats
   const totalGuests = guests.length;
+  const invitedGuests = guests.filter(g => g.isInvited);
+  const invitedGuestsCount = invitedGuests.length;
   const attendingGuests = guests.filter(g => g.rsvp === 'ATTENDING');
   const maybeGuests = guests.filter(g => g.rsvp === 'MAYBE');
   const attendingPlusOnes = attendingGuests.reduce((sum, g) => sum + (g.plusOnes || 0), 0);
@@ -253,11 +255,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          <div className="text-xs text-[#2D2926] flex justify-between items-center bg-[#F5F1EE] p-3 border border-[#EBE3DC]">
-            <span className="uppercase text-[10px] tracking-wider text-[#2D2926]/70">Đồng ý tham gia:</span>
-            <span className="font-mono font-bold">
-              {attendingGuests.length} / {totalGuests} thiệp ({totalGuests > 0 ? Math.round((attendingGuests.length / totalGuests) * 100) : 0}%)
-            </span>
+          <div className="space-y-1.5">
+            <div className="text-xs text-[#2D2926] flex justify-between items-center bg-[#F5F1EE] p-2.5 border border-[#EBE3DC]">
+              <span className="uppercase text-[10px] tracking-wider text-[#2D2926]/70">Đã gửi thiệp / Đã mời:</span>
+              <span className="font-mono font-bold text-emerald-800">
+                {invitedGuestsCount} / {totalGuests} khách ({totalGuests > 0 ? Math.round((invitedGuestsCount / totalGuests) * 100) : 0}%)
+              </span>
+            </div>
+            <div className="text-xs text-[#2D2926] flex justify-between items-center bg-[#FCFAF7] p-2.5 border border-[#EBE3DC]">
+              <span className="uppercase text-[10px] tracking-wider text-[#2D2926]/70">Đồng ý tham gia:</span>
+              <span className="font-mono font-bold">
+                {attendingGuests.length} / {totalGuests} thiệp ({totalGuests > 0 ? Math.round((attendingGuests.length / totalGuests) * 100) : 0}%)
+              </span>
+            </div>
           </div>
         </div>
 

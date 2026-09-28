@@ -42,6 +42,7 @@ export interface GuestItem {
   plusOnes: number; // Số người đi kèm
   tableNumber?: string;
   notes: string;
+  isInvited?: boolean; // Đã gửi thiệp / đã mời hay chưa (Danh sách dự kiến vs Đã mời)
 }
 
 export interface WeddingDetails {

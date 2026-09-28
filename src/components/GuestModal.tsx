@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, User, Phone, MapPin, FileText, Users } from 'lucide-react';
+import { X, Check, User, Phone, MapPin, FileText, Users, MailCheck } from 'lucide-react';
 import { GuestItem, GuestGroup, GuestRSVPStatus, GUEST_GROUP_LABELS, PRIMARY_GUEST_GROUPS } from '../types';
 
 interface GuestModalProps {
@@ -20,6 +20,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [rsvp, setRsvp] = useState<GuestRSVPStatus>('PENDING');
+  const [isInvited, setIsInvited] = useState<boolean>(false);
   const [plusOnes, setPlusOnes] = useState<number | ''>('');
   const [tableNumber, setTableNumber] = useState('');
   const [notes, setNotes] = useState('');
@@ -31,6 +32,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({
       setPhone(guestToEdit.phone || '');
       setAddress(guestToEdit.address || '');
       setRsvp(guestToEdit.rsvp);
+      setIsInvited(guestToEdit.isInvited ?? false);
       setPlusOnes(guestToEdit.plusOnes || '');
       setTableNumber(guestToEdit.tableNumber || '');
       setNotes(guestToEdit.notes || '');
@@ -40,6 +42,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({
       setPhone('');
       setAddress('');
       setRsvp('PENDING');
+      setIsInvited(false);
       setPlusOnes('');
       setTableNumber('');
       setNotes('');
@@ -59,6 +62,7 @@ export const GuestModal: React.FC<GuestModalProps> = ({
         phone: phone.trim(),
         address: address.trim(),
         rsvp,
+        isInvited,
         plusOnes: Number(plusOnes) || 0,
         tableNumber: tableNumber.trim(),
         notes: notes.trim(),
@@ -133,6 +137,40 @@ export const GuestModal: React.FC<GuestModalProps> = ({
                 <option value="PENDING">⏳ Chờ xác nhận</option>
               </select>
             </div>
+          </div>
+
+          {/* Invitation Status Checkbox (Dự kiến vs Đã mời) */}
+          <div className="p-3.5 bg-[#FCFAF7] border border-[#D4C3B5] flex items-center justify-between gap-3">
+            <div className="flex items-start gap-2.5">
+              <MailCheck className={`w-5 h-5 mt-0.5 shrink-0 ${isInvited ? 'text-emerald-700' : 'text-[#2D2926]/40'}`} />
+              <div>
+                <label
+                  htmlFor="input-guest-is-invited"
+                  className="text-xs font-bold text-[#2D2926] flex items-center gap-1.5 cursor-pointer select-none"
+                >
+                  <span>Đã gửi thiệp / Đã mời chính thức</span>
+                  {isInvited ? (
+                    <span className="text-[10px] uppercase font-semibold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 border border-emerald-300">
+                      Đã mời
+                    </span>
+                  ) : (
+                    <span className="text-[10px] uppercase font-semibold bg-[#F5F1EE] text-[#786F68] px-1.5 py-0.5 border border-[#D4C3B5]">
+                      Dự kiến mời
+                    </span>
+                  )}
+                </label>
+                <p className="text-[11px] text-[#2D2926]/60 mt-0.5 leading-snug">
+                  Tích chọn nếu bạn đã gửi thiệp hoặc gọi điện mời khách này. Bỏ tích nếu khách này mới chỉ nằm trong danh sách dự kiến mời.
+                </p>
+              </div>
+            </div>
+            <input
+              id="input-guest-is-invited"
+              type="checkbox"
+              checked={isInvited}
+              onChange={(e) => setIsInvited(e.target.checked)}
+              className="w-5 h-5 accent-[#2D2926] cursor-pointer shrink-0"
+            />
           </div>
 
           {/* Phone & Address */}

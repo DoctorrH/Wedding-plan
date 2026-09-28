@@ -333,10 +333,10 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
             <thead>
               <tr className="bg-[#FCFAF7] text-[#2D2926] text-[10px] uppercase tracking-[0.2em] border-b border-[#EBE3DC]">
                 <th className="py-3.5 px-4 font-semibold">Khách Mời</th>
-                <th className="py-3.5 px-3 font-semibold">Nhóm</th>
                 <th className="py-3.5 px-3 font-semibold text-center" title="Tick để đánh dấu khách đã được mời hay mới chỉ trong danh sách dự kiến">
                   Đã Mời?
                 </th>
+                <th className="py-3.5 px-3 font-semibold">Nhóm</th>
                 <th className="py-3.5 px-3 font-semibold">Số Điện Thoại & Địa Chỉ</th>
                 <th className="py-3.5 px-3 font-semibold">Xác Nhận Tham Dự (RSVP)</th>
                 <th className="py-3.5 px-3 text-center font-semibold">Đi Kèm</th>
@@ -372,13 +372,6 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
                         </div>
                       </td>
 
-                      {/* Group */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
-                        <span className="inline-block text-[10px] uppercase tracking-wider bg-[#F5F1EE] text-[#2D2926] px-2.5 py-1 border border-[#D4C3B5]">
-                          {groupLabel}
-                        </span>
-                      </td>
-
                       {/* TÌNH TRẠNG MỜI (MỤC TICK: ĐÃ MỜI HAY CHỈ DỰ KIẾN) */}
                       <td className="py-3.5 px-3 whitespace-nowrap text-center">
                         <label 
@@ -411,6 +404,13 @@ export const GuestListView: React.FC<GuestListViewProps> = ({
                             )}
                           </span>
                         </label>
+                      </td>
+
+                      {/* Group */}
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <span className="inline-block text-[10px] uppercase tracking-wider bg-[#F5F1EE] text-[#2D2926] px-2.5 py-1 border border-[#D4C3B5]">
+                          {groupLabel}
+                        </span>
                       </td>
 
                       {/* Phone & Address */}

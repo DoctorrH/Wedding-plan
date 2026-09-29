@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Be Vietnam Pro", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: "Times New Roman", Times, Georgia, serif;
+  --font-sans: "Times New Roman", Times, Georgia, serif;
   --color-editorial-bg: #FCFAF7;
   --color-editorial-dark: #1A1816;
   --color-editorial-border: #DCD3CC;
@@ -11,7 +11,7 @@
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: "Times New Roman", Times, Georgia, serif;
   background-color: #FCFAF7;
   color: #1A1816;
   font-weight: 500;
@@ -25,12 +25,13 @@ body {
 
 /* Enhancements for clear, bold text legibility */
 h1, h2, h3, h4, h5, h6 {
+  font-family: "Times New Roman", Times, Georgia, serif;
   color: #11100F;
   letter-spacing: -0.015em;
 }
 
 input, select, textarea, button {
-  font-family: var(--font-sans);
+  font-family: "Times New Roman", Times, Georgia, serif;
 }
 
 ::placeholder {

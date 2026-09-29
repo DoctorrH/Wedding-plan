@@ -65,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-4xl font-serif italic font-semibold tracking-tight text-[#1A1816]">
+                <h1 style={{ fontFamily: '"Playfair Display", Georgia, serif' }} className="text-2xl sm:text-4xl font-serif italic font-semibold tracking-tight text-[#1A1816]">
                   Lễ Cưới Của {weddingDetails.groomName || 'Minh Đức'} & {weddingDetails.brideName || 'Thu Trang'}
                 </h1>
                 <button
